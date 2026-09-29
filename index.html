@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=yes"
+    />
+    <title>PlasticSource</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@stlite/browser@1.8.1/build/stlite.css"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@1.8.1/build/stlite.js"
+mount(
+  {
+    requirements: ["pydeck", "cartopy", "shapely", "scipy", "h5netcdf",
+      "plotly", "numpy", "pandas", "xarray", "netcdf4", "kaleido"],
+    entrypoint: "ck.py",
+    files: {
+      "ck.py": {
+        url: "./ck.py",
+      },
+      "slim_data/pom_currents_slim.nc": {
+        url: "https://osf.io/download/9h85c/?view_only=08ec1e407aee4e09b6de3e80840431af",
+      },
+      "slim_data/wrf_wind_slim.nc": {
+        url: "https://osf.io/download/u2pwx/?view_only=08ec1e407aee4e09b6de3e80840431af",
+      },
+    },
+  },
+  document.getElementById("root")
+)
+    </script>
+  </body>
+</html>
+
