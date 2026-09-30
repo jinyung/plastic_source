@@ -1369,12 +1369,12 @@ _PNG_TEXT_MAP = {
 
 # def _translate_fig_text(fig):
 #     """回傳一個「文字已英文化」的圖表副本，供 PNG 匯出使用。
-
+#
 #     僅複製圖表物件並替換文字，不影響網頁上顯示的原始圖表。
 #     """
 #     import copy as _copy
 #     f = _copy.deepcopy(fig)
-
+#
 #     def _tr(s):
 #         if not isinstance(s, str):
 #             return s
@@ -1382,47 +1382,47 @@ _PNG_TEXT_MAP = {
 #             if zh in s:
 #                 s = s.replace(zh, en)
 #         return s
-
-    # 標題
-    if f.layout.title and f.layout.title.text:
-        f.layout.title.text = _tr(f.layout.title.text)
-    # 軸標題
-    for ax in (f.layout.xaxis, f.layout.yaxis):
-        if ax is not None and ax.title and ax.title.text:
-            ax.title.text = _tr(ax.title.text)
-    # 圖例標題（如「回溯狀態類別」）
-    if f.layout.legend and f.layout.legend.title and f.layout.legend.title.text:
-        f.layout.legend.title.text = _tr(f.layout.legend.title.text)
-    # 圖例名稱（traces）
-    for tr in f.data:
-        if getattr(tr, "name", None):
-            tr.name = _tr(tr.name)
-        # trace 的 x 值：類別軸（如 final_status）會把中文類別值放在這裡，
-        # 這些值會顯示在 x 軸刻度上。僅在元素為字串時翻譯，避免動到數值。
-        # 注意：plotly 對大型陣列會用特殊編碼（dict 形式，含 dtype/bdata），
-        # 必須排除，否則會破壞圖表資料。
-        xv = getattr(tr, "x", None)
-        if xv is not None and not isinstance(xv, dict):
-            try:
-                xlist = list(xv)
-                if xlist and all(isinstance(v, str) for v in xlist):
-                    tr.x = tuple(_tr(v) for v in xlist)
-            except (TypeError, IndexError, KeyError):
-                pass
-    # 軸刻度標籤（類別軸，如 final_status 的類別值）
-    for ax in (f.layout.xaxis, f.layout.yaxis):
-        if ax is None:
-            continue
-        if getattr(ax, "ticktext", None):
-            ax.ticktext = tuple(_tr(t) for t in ax.ticktext)
-        if getattr(ax, "categoryarray", None):
-            ax.categoryarray = tuple(_tr(t) for t in ax.categoryarray)
-    # 註解（如 50% 判定線）
-    if f.layout.annotations:
-        for ann in f.layout.annotations:
-            if getattr(ann, "text", None):
-                ann.text = _tr(ann.text)
-    return f
+#
+#     # 標題
+#     if f.layout.title and f.layout.title.text:
+#         f.layout.title.text = _tr(f.layout.title.text)
+#     # 軸標題
+#     for ax in (f.layout.xaxis, f.layout.yaxis):
+#         if ax is not None and ax.title and ax.title.text:
+#             ax.title.text = _tr(ax.title.text)
+#     # 圖例標題（如「回溯狀態類別」）
+#     if f.layout.legend and f.layout.legend.title and f.layout.legend.title.text:
+#         f.layout.legend.title.text = _tr(f.layout.legend.title.text)
+#     # 圖例名稱（traces）
+#     for tr in f.data:
+#         if getattr(tr, "name", None):
+#             tr.name = _tr(tr.name)
+#         # trace 的 x 值：類別軸（如 final_status）會把中文類別值放在這裡，
+#         # 這些值會顯示在 x 軸刻度上。僅在元素為字串時翻譯，避免動到數值。
+#         # 注意：plotly 對大型陣列會用特殊編碼（dict 形式，含 dtype/bdata），
+#         # 必須排除，否則會破壞圖表資料。
+#         xv = getattr(tr, "x", None)
+#         if xv is not None and not isinstance(xv, dict):
+#             try:
+#                 xlist = list(xv)
+#                 if xlist and all(isinstance(v, str) for v in xlist):
+#                     tr.x = tuple(_tr(v) for v in xlist)
+#             except (TypeError, IndexError, KeyError):
+#                 pass
+#     # 軸刻度標籤（類別軸，如 final_status 的類別值）
+#     for ax in (f.layout.xaxis, f.layout.yaxis):
+#         if ax is None:
+#             continue
+#         if getattr(ax, "ticktext", None):
+#             ax.ticktext = tuple(_tr(t) for t in ax.ticktext)
+#         if getattr(ax, "categoryarray", None):
+#             ax.categoryarray = tuple(_tr(t) for t in ax.categoryarray)
+#     # 註解（如 50% 判定線）
+#     if f.layout.annotations:
+#         for ann in f.layout.annotations:
+#             if getattr(ann, "text", None):
+#                 ann.text = _tr(ann.text)
+#     return f
 
 
 # def fig_to_png_bytes(fig, width=1400, height=800, scale=2):
@@ -1447,7 +1447,7 @@ _PNG_TEXT_MAP = {
 
 # def render_figure_export(fig, filename, label="圖表", key=None):
 #     """在 Streamlit 中渲染「下載此圖 PNG」按鈕。
-
+#
 #     若 kaleido 不可用，顯示提示訊息（不中斷頁面）。
 #     """
 #     png_bytes = fig_to_png_bytes(fig)
@@ -2232,7 +2232,7 @@ with tab2:
                 title="漂流總里程分佈 (Travel Distance Distribution)",
                 labels={"distance_km": "漂流距離 (km)", "count": "粒子數量"}
             )
-            st.plotly_chart(fig_hist, use_container_width=True, config=PLOTLY_CONFIG,)
+            st.plotly_chart(fig_hist, use_container_width=True, config=PLOTLY_CONFIG)
             # render_figure_export(fig_hist, "chart_travel_distance.png", label="漂流里程分佈圖", key="dl_hist")
 
         with col_fig2:
@@ -2242,7 +2242,7 @@ with tab2:
                 labels={"final_status": "回溯狀態類別", "count": "粒子數量"},
                 color="final_status"
             )
-            st.plotly_chart(fig_status, use_container_width=True, config=PLOTLY_CONFIG,)
+            st.plotly_chart(fig_status, use_container_width=True, config=PLOTLY_CONFIG)
             # render_figure_export(fig_status, "chart_particle_fate.png", label="粒子歸宿分佈圖", key="dl_status")
 
 # ============================================================
@@ -2393,7 +2393,7 @@ with tab3:
                 template="plotly_dark",
                 height=420,
             )
-            st.plotly_chart(fig_sens, use_container_width=True, config=PLOTLY_CONFIG,)
+            st.plotly_chart(fig_sens, use_container_width=True, config=PLOTLY_CONFIG)
             # render_figure_export(fig_sens, "chart_sensitivity.png", label="敏感度曲線圖", key="dl_sens")
 
             # 掃描結果表格
