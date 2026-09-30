@@ -187,6 +187,21 @@ HOTSPOT_RELEASE_POINTS = {
 HOTSPOT_CENTERS = dict(HOTSPOT_RELEASE_POINTS)
 
 # ============================================================
+# PLOT EXPORT
+# ============================================================
+
+PLOTLY_CONFIG = {
+    "displaylogo": False,
+    "toImageButtonOptions": {
+        "format": "png",
+        "filename": "plastic_source_chart",
+        "width": 1400,
+        "height": 800,
+        "scale": 2,
+    },
+}
+
+# ============================================================
 # TITLE
 # ============================================================
 
@@ -1352,21 +1367,21 @@ _PNG_TEXT_MAP = {
 }
 
 
-def _translate_fig_text(fig):
-    """回傳一個「文字已英文化」的圖表副本，供 PNG 匯出使用。
+# def _translate_fig_text(fig):
+#     """回傳一個「文字已英文化」的圖表副本，供 PNG 匯出使用。
 
-    僅複製圖表物件並替換文字，不影響網頁上顯示的原始圖表。
-    """
-    import copy as _copy
-    f = _copy.deepcopy(fig)
+#     僅複製圖表物件並替換文字，不影響網頁上顯示的原始圖表。
+#     """
+#     import copy as _copy
+#     f = _copy.deepcopy(fig)
 
-    def _tr(s):
-        if not isinstance(s, str):
-            return s
-        for zh, en in _PNG_TEXT_MAP.items():
-            if zh in s:
-                s = s.replace(zh, en)
-        return s
+#     def _tr(s):
+#         if not isinstance(s, str):
+#             return s
+#         for zh, en in _PNG_TEXT_MAP.items():
+#             if zh in s:
+#                 s = s.replace(zh, en)
+#         return s
 
     # 標題
     if f.layout.title and f.layout.title.text:
@@ -1410,44 +1425,43 @@ def _translate_fig_text(fig):
     return f
 
 
-def fig_to_png_bytes(fig, width=1400, height=800, scale=2):
-    """將 plotly 圖表轉為 PNG 位元組，供 st.download_button 下載。
+# def fig_to_png_bytes(fig, width=1400, height=800, scale=2):
+#     """將 plotly 圖表轉為 PNG 位元組，供 st.download_button 下載。
 
-    為何需要此函式（研究成果匯出）：
-      復賽報告「研究成果」需附具體圖表。使用者可直接從系統匯出高解析度
-      PNG（scale=2 即 2 倍解析度，適合列印），無須手動截圖。
+#     為何需要此函式（研究成果匯出）：
+#       復賽報告「研究成果」需附具體圖表。使用者可直接從系統匯出高解析度
+#       PNG（scale=2 即 2 倍解析度，適合列印），無須手動截圖。
 
-    中文處理：雲端 kaleido/Chromium 缺中文字型，故匯出前先將圖表文字
-      英文化（見 _translate_fig_text），避免 PNG 出現「豆腐塊」。
+#     中文處理：雲端 kaleido/Chromium 缺中文字型，故匯出前先將圖表文字
+#       英文化（見 _translate_fig_text），避免 PNG 出現「豆腐塊」。
 
-    依賴：kaleido（plotly 靜態圖片引擎）。若未安裝則回傳 None，
-    呼叫端應顯示提示而非崩潰。
-    """
-    try:
-        export_fig = _translate_fig_text(fig)
-        return export_fig.to_image(format="png", width=width, height=height, scale=scale)
-    except Exception:
-        return None
+#     依賴：kaleido（plotly 靜態圖片引擎）。若未安裝則回傳 None，
+#     呼叫端應顯示提示而非崩潰。
+#     """
+#     try:
+#         export_fig = _translate_fig_text(fig)
+#         return export_fig.to_image(format="png", width=width, height=height, scale=scale)
+#     except Exception:
+#         return None
 
 
-def render_figure_export(fig, filename, label="圖表", key=None):
-    """在 Streamlit 中渲染「下載此圖 PNG」按鈕。
+# def render_figure_export(fig, filename, label="圖表", key=None):
+#     """在 Streamlit 中渲染「下載此圖 PNG」按鈕。
 
-    若 kaleido 不可用，顯示提示訊息（不中斷頁面）。
-    """
-    png_bytes = fig_to_png_bytes(fig)
-    if png_bytes is None:
-        st.caption("⚠️ 圖表匯出需安裝 `kaleido`（`pip install kaleido`），目前無法產生 PNG。")
-        return
-    st.download_button(
-        f"⬇️ 下載{label} PNG (高解析度)",
-        data=png_bytes,
-        file_name=filename,
-        mime="image/png",
-        use_container_width=True,
-        key=key,
-    )
-
+#     若 kaleido 不可用，顯示提示訊息（不中斷頁面）。
+#     """
+#     png_bytes = fig_to_png_bytes(fig)
+#     if png_bytes is None:
+#         st.caption("⚠️ 圖表匯出需安裝 `kaleido`（`pip install kaleido`），目前無法產生 PNG。")
+#         return
+#     st.download_button(
+#         f"⬇️ 下載{label} PNG (高解析度)",
+#         data=png_bytes,
+#         file_name=filename,
+#         mime="image/png",
+#         use_container_width=True,
+#         key=key,
+#     )
 
 def build_paths_from_history(history_lon, history_lat, step_idx, particle_indices, particle_sites=None, site_kind_map=None, max_particles=200):
     if step_idx < 1 or len(particle_indices) == 0:
@@ -2218,8 +2232,8 @@ with tab2:
                 title="漂流總里程分佈 (Travel Distance Distribution)",
                 labels={"distance_km": "漂流距離 (km)", "count": "粒子數量"}
             )
-            st.plotly_chart(fig_hist, use_container_width=True)
-            render_figure_export(fig_hist, "chart_travel_distance.png", label="漂流里程分佈圖", key="dl_hist")
+            st.plotly_chart(fig_hist, use_container_width=True, config=PLOTLY_CONFIG,)
+            # render_figure_export(fig_hist, "chart_travel_distance.png", label="漂流里程分佈圖", key="dl_hist")
 
         with col_fig2:
             fig_status = px.histogram(
@@ -2228,8 +2242,8 @@ with tab2:
                 labels={"final_status": "回溯狀態類別", "count": "粒子數量"},
                 color="final_status"
             )
-            st.plotly_chart(fig_status, use_container_width=True)
-            render_figure_export(fig_status, "chart_particle_fate.png", label="粒子歸宿分佈圖", key="dl_status")
+            st.plotly_chart(fig_status, use_container_width=True, config=PLOTLY_CONFIG,)
+            # render_figure_export(fig_status, "chart_particle_fate.png", label="粒子歸宿分佈圖", key="dl_status")
 
 # ============================================================
 # TAB 3 - 敏感度分析
@@ -2379,8 +2393,8 @@ with tab3:
                 template="plotly_dark",
                 height=420,
             )
-            st.plotly_chart(fig_sens, use_container_width=True)
-            render_figure_export(fig_sens, "chart_sensitivity.png", label="敏感度曲線圖", key="dl_sens")
+            st.plotly_chart(fig_sens, use_container_width=True, config=PLOTLY_CONFIG,)
+            # render_figure_export(fig_sens, "chart_sensitivity.png", label="敏感度曲線圖", key="dl_sens")
 
             # 掃描結果表格
             _tbl = sens_df.copy()
